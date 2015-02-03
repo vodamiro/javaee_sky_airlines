@@ -1,0 +1,106 @@
+JAVA EE Project
+Vodamiro & Rubespe & Slovasim & Tomasda
+
+DIR		Purpose
+server	server part
+
+=======================================
+ URLs
+=======================================
+
+http://localhost:8080/
+http://localhost:8080/rest/
+
+Example: http://localhost:8080/rest/users
+
+=======================================
+ BUILDING
+=======================================
+
+./build.sh in server dir
+
+OR 
+
+mvn clean package wildfly:deploy
+
+=======================================
+ standalone.xml CONFIGURATION
+=======================================
+
+<security-domains> ...
+
+<security-domain name="javaeedomain" cache-type="default">
+    <authentication>
+        <login-module code="UsersRoles" flag="required">
+            <module-option name="usersProperties" value="users.properties"/>
+            <module-option name="rolesProperties" value="roles.properties"/>
+        </login-module>
+    </authentication>
+</security-domain>
+
+... </security-domains>
+
+<subsystem xmlns="urn:jboss:domain:infinispan:2.0"> ...
+    <cache-container  name="cluster" aliases="ha-partition">
+
+        <replicated-cache name="flightsCache" mode="SYNC" batching="true">
+            <persistence passivation="false">
+               <!-- note that class is missing and is induced by the fileStore element name -->
+               <file-store
+                       shared="false" preload="true"
+                       fetch-state="true"
+                       read-only="false"
+                       purge="false"
+                       path="${jboss.server.data.dir}">
+                  <write-behind flush-lock-timeout="15000" thread-pool-size="5" />
+               </file-store>
+            </persistence>
+        </replicated-cache>
+        
+         <local-cache name="destinationsCache" mode="SYNC" batching="true">
+            <persistence passivation="false">
+               <!-- note that class is missing and is induced by the fileStore element name -->
+               <file-store
+                       shared="false" preload="true"
+                       fetch-state="true"
+                       read-only="false"
+                       purge="false"
+                       path="${jboss.server.data.dir}">
+                  <write-behind flush-lock-timeout="15000" thread-pool-size="5" />
+               </file-store>
+            </persistence>
+        </replicated-cache>
+        
+        <replicated-cache name="reservationsCache" mode="SYNC" batching="true">
+           <persistence passivation="false">
+              <!-- note that class is missing and is induced by the fileStore element name -->
+              <file-store
+                      shared="false" preload="true"
+                      fetch-state="true"
+                      read-only="false"
+                      purge="false"
+                      path="${jboss.server.data.dir}">
+                 <write-behind flush-lock-timeout="15000" thread-pool-size="5" />
+              </file-store>
+           </persistence>
+       </replicated-cache>
+        
+       <replicated-cache name="lastIdsCache" mode="SYNC" batching="true"> 
+           <persistence passivation="false">
+              <!-- note that class is missing and is induced by the fileStore element name -->
+              <file-store
+                      shared="false" preload="true"
+                      fetch-state="true"
+                      read-only="false"
+                      purge="false"
+                      path="${jboss.server.data.dir}">
+                 <write-behind flush-lock-timeout="15000" thread-pool-size="5" />
+              </file-store>
+           </persistence>
+       </replicated-cache>
+        
+    </cache-container>
+    
+... </subsystem>
+
+

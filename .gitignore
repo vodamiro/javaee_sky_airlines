@@ -1,0 +1,5 @@
+/server/target/
+/server/nb-configuration.xml
+/server/nbactions.xml
+/server/.idea
+*.iml

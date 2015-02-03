@@ -1,0 +1,9 @@
+<job id="resOverview" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="process">
+        <chunk item-count="3">
+            <reader ref="ResOverviewItemReader"/>
+            <processor ref="ResOverviewItemProcessor"/>
+            <writer ref="ResOverviewItemWriter"/>
+        </chunk>
+    </step>
+</job>
